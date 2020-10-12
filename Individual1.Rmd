@@ -1,0 +1,153 @@
+---
+title: "Lab4"
+author: "Molly Carrick"
+date: "10/7/2020"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(tidyverse)
+defense <- read_excel('cyclonesFootball2019.xlsx', sheet='Defensive')
+offense <- read_excel('cyclonesFootball2019.xlsx', sheet='Offensive')
+biography <- read_excel('cyclonesFootball2019.xlsx', sheet='Biography')
+```
+
+
+
+```{r}
+defClean<-defense%>%
+  rename(Opponent=Opponent_Opponent)%>%
+  mutate(Opponent=factor(Opponent))%>%
+  mutate(Name=factor(Name))%>%
+  mutate(Tackles_Solo=as.numeric(Tackles_Solo))%>%
+  mutate(Tackles_ASST=as.numeric(Tackles_ASST))%>%
+  mutate(Tackles_TFL=as.numeric(Tackles_TFL))%>%
+  mutate(Tackles_Sack=as.numeric(Tackles_Sack))%>%
+  mutate(Turnover_FF=as.numeric(Turnover_FF))%>%
+  mutate(Turnover_FR=as.numeric(Turnover_FR))%>%
+  mutate(Turnover_INT=as.numeric(Turnover_INT))%>%
+  mutate(Pass_QBH=as.numeric(Pass_QBH))%>%
+  mutate(Pass_PB=as.numeric(Pass_PB))
+
+offClean<-offense%>%
+  rename(Opponent=Opponent_Opponent)%>%
+  mutate(Opponent=factor(Opponent))%>%
+  mutate(Name=factor(Name))%>%
+  mutate(Rushing_ATT=as.numeric(Rushing_ATT))%>%
+  mutate(Rushing_YDS=as.numeric(Rushing_YDS))%>%
+  mutate(Rushing_TD=as.numeric(Rushing_TD))%>%
+  mutate(Receiving_REC=as.numeric(Receiving_REC))%>%
+  mutate(Receiving_YDS=as.numeric(Receiving_YDS))%>%
+  mutate(Receiving_TD=as.numeric(Receiving_TD))%>%
+  mutate(`Passing_CMP-ATT`=as.numeric(`Passing_CMP-ATT`))%>%
+  mutate(Passing_YDS=as.numeric(Passing_YDS))%>%
+  mutate(Passing_TD=as.numeric(Passing_TD))%>%
+  mutate(Passing_INT=as.numeric(Passing_INT))
+
+
+bioClean<-biography%>%
+  mutate(Name=factor(Name))%>%
+  separate(Height, into=c('feet','inches'), sep='-')%>%
+  mutate(feet=as.numeric(feet))%>%
+  mutate(inches=as.numeric(inches))
+
+bioClean$feet<-bioClean$feet * 12
+bioClean$Height<-bioClean$feet+bioClean$inches
+bioClean<-select(bioClean,-feet,-inches)
+
+str(defClean)
+str(offClean)
+str(bioClean) 
+```
+
+
+
+```{r}
+defClean2<-defClean%>%
+  pivot_longer(Tackles_Solo:Pass_PB, names_to="type", values_to='stat')
+
+str(defClean2) ## Compare Distributions/scatter plot
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+bioClean<-bioClean%>%
+  separate(Hometown, into=c('City','State'), sep=',')
+
+
+##How many players are there from each state?
+```
+
+
+
+Part 3
+Find which states do the ISU defensive and offensive players come from. Create an appropriate summary.
+
+```{r}
+playerState<-bioClean%>%
+  select(Name,State)
+
+originDef<-playerState%>%
+  semi_join(defClean, by="Name")
+
+ggplot(originDef, aes(x=State))+geom_bar()+ggtitle("Defensive Player Origin")
+
+originOff<-playerState%>%
+  semi_join(offClean, by="Name")
+
+ggplot(originOff, aes(x=State))+geom_bar()+ggtitle("Offensive Player Origin")
+
+str(originDef)
+```
+```{r}
+
+str(originOff)
+```
+
+How does the performance of quarterback Brock Purdy relate to the performance of the ISU team?
+
+```{r}
+count(originDef, 'State')
+count(originOff, 'State')
+```
+```{r}
+
+try<-playerState%>%
+  left_join(defClean, by="Name")
+
+try<-try%>%
+  inner_join(playerState, by="Name")
+```
+
+
+```{r}
+
+playerOff<-offClean%>%
+  select(Name)
+
+class(playerOff)
+levels(playerOff$Name)
+
+df<-data.frame(Name=levels(playerOff$Name))
+
+
+dataframe<-df%>%
+  left_join(playerState, by="Name")
+
+ggplot(dataframe, aes(x=State))+geom_bar()+ggtitle("Offensive Player Origin")
+```
+
+
+How does the performance of quarterback Brock Purdy relate to the performance of the ISU team?
+
+```{r}
+
+
+```
+
+
+
+
+
