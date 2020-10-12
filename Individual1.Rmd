@@ -144,7 +144,7 @@ How does the performance of quarterback Brock Purdy relate to the performance of
 
 ```{r}
 
-
+view(biography)
 ```
 
 

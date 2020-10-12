@@ -570,7 +570,7 @@ all%&gt;%
 ## #   Receiving_REC &lt;dbl&gt;, Receiving_YDS &lt;dbl&gt;, Receiving_TD &lt;dbl&gt;,
 ## #   `Passing_CMP-ATT` &lt;dbl&gt;, Passing_YDS &lt;dbl&gt;, Passing_TD &lt;dbl&gt;,
 ## #   Passing_INT &lt;dbl&gt;, performance &lt;dbl&gt;</code></pre>
-<p>I was not able to find a way to compare Brock Purdy’s Stats to the rest of the team. I apologize.</p>
+<p>I was not able to find a way to compare Brock Purdy’s Stats to the rest of the team, but I was able to combine the two sheets through full join which kept all the stats in both data frames. I apologize.</p>
 <p>3.Which ISU player(s) made big progress over the last year?</p>
 <pre class="r"><code>def2018 &lt;- read_excel('cyclonesFootball2018.xlsx', sheet='Defensive')
 off2018 &lt;- read_excel('cyclonesFootball2018.xlsx', sheet='Offensive')
@@ -613,7 +613,7 @@ offClean2018&lt;-off2018%&gt;%
   left_join(offClean2018, by=&quot;Name&quot;)</code></pre>
 <pre><code>## Warning: Column `Name` joining factors with different levels, coercing to
 ## character vector</code></pre>
-<p>Between last year and 2019, it appears Brock Purdy has gotten better.</p>
+<p>Since I struggled with the last question, I also was not sure of how to copare statistics here. However, looking a a few players individually, it appears Brock Purdy has gotten better on offense and Mike Rose has worse stats on defense.</p>
 
 
 
